@@ -7,6 +7,15 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom',
-    setupFiles: './src/test/setup.ts', // Create this file if needed
+    setupFiles: './src/test/setup.ts',
+    include: ['**/*.{test,spec}.{ts,tsx}'],
+    coverage: {
+      reporter: ['text', 'json', 'html'],
+    },
+  },
+  resolve: {
+    alias: {
+      '@': '/src',
+    },
   },
 })
