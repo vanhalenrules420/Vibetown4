@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Map Test</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+        .image-container {
+            position: relative;
+            margin: 20px;
+        }
+        .image-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        .controls {
+            margin: 20px;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Simple Map Test</h1>
+    
+    <div class="controls">
+        <p>Testing image loading without Phaser</p>
+        <div id="status">Loading images...</div>
+    </div>
+    
+    <div class="image-container">
+        <!-- Bottom layer -->
+        <img id="floor2" src="assets/mattdalley_f2.png" alt="Floor 2" onload="imageLoaded('floor2')" onerror="imageError('floor2')">
+        
+        <!-- Top layer (will be positioned over the bottom layer) -->
+        <img id="floor1" class="image-layer" src="assets/mattdalley_f1.png" alt="Floor 1" onload="imageLoaded('floor1')" onerror="imageError('floor1')">
+    </div>
+    
+    <script>
+        // Track loaded images
+        const imagesToLoad = ['floor1', 'floor2'];
+        const loadedImages = {};
+        
+        function imageLoaded(id) {
+            console.log(`Image loaded: ${id}`);
+            loadedImages[id] = true;
+            updateStatus();
+        }
+        
+        function imageError(id) {
+            console.error(`Error loading image: ${id}`);
+            loadedImages[id] = false;
+            updateStatus();
+        }
+        
+        function updateStatus() {
+            const statusElement = document.getElementById('status');
+            const allLoaded = imagesToLoad.every(id => loadedImages[id] === true);
+            const anyFailed = imagesToLoad.some(id => loadedImages[id] === false);
+            
+            if (allLoaded) {
+                statusElement.innerHTML = 'All images loaded successfully!';
+                statusElement.style.color = 'green';
+            } else if (anyFailed) {
+                statusElement.innerHTML = 'Some images failed to load. Check console for details.';
+                statusElement.style.color = 'red';
+            } else {
+                statusElement.innerHTML = 'Loading images...';
+            }
+        }
+    </script>
+</body>
+</html>

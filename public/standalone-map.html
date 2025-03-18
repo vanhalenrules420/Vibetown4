@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phaser Map Test - Simplified</title>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        #game-container {
+            width: 800px;
+            height: 600px;
+        }
+        #debug-panel {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            width: 300px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 80vh;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container"></div>
+    <div id="debug-panel">Debug Panel:<br></div>
+
+    <script>
+        // Debug logging function
+        function debugLog(message) {
+            console.log(message);
+            const debugPanel = document.getElementById('debug-panel');
+            debugPanel.innerHTML += message + '<br>';
+        }
+
+        // Error logging function
+        function debugError(message, error) {
+            console.error(message, error);
+            const debugPanel = document.getElementById('debug-panel');
+            debugPanel.innerHTML += `<span style="color: red">${message}: ${error?.message || error}</span><br>`;
+        }
+
+        class MainScene extends Phaser.Scene {
+            constructor() {
+                super('MainScene');
+                this.player = null;
+                this.cursors = null;
+                this.positionText = null;
+            }
+
+            preload() {
+                debugLog('Preload started');
+                
+                // Load only the necessary images
+                this.load.image('floor1', 'assets/mattdalley_f1.png');
+                this.load.image('floor2', 'assets/mattdalley_f2.png');
+                
+                // Add loading progress events
+                this.load.on('progress', (value) => {
+                    debugLog(`Loading progress: ${Math.floor(value * 100)}%`);
+                });
+                
+                this.load.on('complete', () => {
+                    debugLog('All assets loaded');
+                });
+            }
+
+            create() {
+                debugLog('Create function started');
+                
+                try {
+                    // Add the floor images in order (bottom to top)
+                    debugLog('Adding floor2 image (bottom layer)');
+                    this.add.image(0, 0, 'floor2').setOrigin(0, 0);
+                    
+                    debugLog('Adding floor1 image (top layer)');
+                    this.add.image(0, 0, 'floor1').setOrigin(0, 0);
+                    
+                    // Create a simple player (white rectangle)
+                    debugLog('Creating player');
+                    this.player = this.add.rectangle(400, 300, 32, 32, 0xffffff);
+                    
+                    // Set up camera to follow player
+                    this.cameras.main.setBounds(0, 0, 1440, 1440); // 90 * 16 = 1440
+                    this.cameras.main.startFollow(this.player);
+                    
+                    // Set up keyboard input
+                    this.cursors = this.input.keyboard.createCursorKeys();
+                    
+                    // Add position text
+                    this.positionText = this.add.text(10, 10, 'Position: (400, 300)', {
+                        font: '16px Arial',
+                        fill: '#ffffff',
+                        backgroundColor: '#000000',
+                        padding: { x: 5, y: 5 }
+                    });
+                    this.positionText.setScrollFactor(0);
+                    
+                    debugLog('Scene created successfully!');
+                } catch (error) {
+                    debugError('Error creating scene', error);
+                }
+            }
+
+            update() {
+                if (!this.player || !this.cursors) return;
+                
+                // Handle player movement
+                const speed = 4;
+                
+                if (this.cursors.left.isDown) {
+                    this.player.x -= speed;
+                } else if (this.cursors.right.isDown) {
+                    this.player.x += speed;
+                }
+                
+                if (this.cursors.up.isDown) {
+                    this.player.y -= speed;
+                } else if (this.cursors.down.isDown) {
+                    this.player.y += speed;
+                }
+                
+                // Update position text
+                if (this.positionText) {
+                    const x = Math.floor(this.player.x);
+                    const y = Math.floor(this.player.y);
+                    this.positionText.setText(`Position: (${x}, ${y})`);
+                }
+            }
+        }
+
+        // Game configuration
+        const config = {
+            type: Phaser.AUTO,
+            width: 800,
+            height: 600,
+            parent: 'game-container',
+            scene: [MainScene]
+        };
+
+        // Create the game
+        debugLog('Initializing Phaser game');
+        const game = new Phaser.Game(config);
+    </script>
+</body>
+</html>
