@@ -30,7 +30,7 @@ function App() {
   return (
     <div className="app-container">
       <header>
-        <h1>Vibe Town</h1>
+        <h1>vibe town, baby!</h1>
         <p>A multiplayer virtual office space</p>
       </header>
       
