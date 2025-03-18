@@ -8,10 +8,15 @@
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "test": "vitest"
+    "test": "vitest",
+    "server": "node --loader ts-node/esm src/server/index.ts"
   },
   "dependencies": {
+    "@colyseus/schema": "^3.0.22",
+    "@colyseus/ws-transport": "^0.16.3",
+    "colyseus": "^0.16.3",
     "colyseus.js": "^0.16.11",
+    "express": "^4.21.2",
     "peerjs": "^1.5.4",
     "phaser": "^3.88.2",
     "react": "^18.2.0",
@@ -20,6 +25,7 @@
   "devDependencies": {
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.2.0",
+    "@types/express": "^5.0.0",
     "@types/node": "^22.13.10",
     "@types/react": "^18.2.55",
     "@types/react-dom": "^18.2.19",
@@ -30,6 +36,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
     "jsdom": "^26.0.0",
+    "ts-node": "^10.9.2",
     "typescript": "^5.2.2",
     "vite": "^5.1.0",
     "vitest": "^3.0.9"
